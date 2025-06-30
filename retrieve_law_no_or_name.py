@@ -2,8 +2,8 @@
 class RetrieveLaw:
     def __init__(self):
         import requests
-        url = "https://laws.e-gov.go.jp/api/1/lawlists/2"
-        self.response = requests.get(url,verify = False)
+        url = "https://laws.e-gov.go.jp/api/1/lawlists/1"
+        self.response = requests.get(url,verify = True)
         # レスポンスのステータスコードを確認
         if self.response.status_code == 200:
             # レスポンスのJSONデータを取得
@@ -42,11 +42,11 @@ if __name__ == "__main__":
     retriever = RetrieveLaw()
     
    # Retrieve law number by law name
-    law_name = "民法"
+    law_name = "建築基準法施行令"
     law_no = retriever.get_law_name_or_no("LawName", law_name)
     print(f"Law No for '{law_name}': {law_no}")
     
     # Retrieve law name by law number
-    law_no = "平成29年法律第44号"
+    law_no = "昭和二十五年政令第三百三十八号"
     law_name = retriever.get_law_name_or_no("LawNo", law_no)
     print(f"Law Name for '{law_no}': {law_name}")

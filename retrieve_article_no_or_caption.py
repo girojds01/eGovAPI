@@ -7,7 +7,7 @@ class RetrieveArticle:
         import requests
         url = f"https://laws.e-gov.go.jp/api/1/lawdata/{LawNo}"
         print(url)
-        self.response = requests.get(url,verify = False)
+        self.response = requests.get(url,verify = True)
         # レスポンスのステータスコードを確認
         if self.response.status_code == 200:
             # レスポンスのJSONデータを取得
@@ -25,19 +25,15 @@ class RetrieveArticle:
         import xml.etree.ElementTree as ET
         root = ET.fromstring(self.data)
         
-        # 条見出しに一致するArticleCaption要素を検索
-        article_captions = root.findall('.//ArticleCaption')
-        
-        # 一致する条文番号を格納するリスト
-        article_numbers = []
-        
-        for caption in article_captions:
-            if caption.text == article_caption:
-                # 親要素のArticleNoから条文番号を取得
-                article_no = caption.find('ArticleNo').text
-                article_numbers.append(article_no)
-        
-        return article_numbers
+        # <ArticleTitle>がarticle_noの<Article>要素を探す
+        for article in root.findall('.//Article'):
+            caption = article.find('ArticleCaption')
+            # print(title.text)
+            if caption is not None and caption.text == article_caption:
+                title = article.find('ArticleTitle')
+                if title is not None:
+                    return title.text 
+                
     
     def get_article_caption(self,article_no):
         """
@@ -55,53 +51,31 @@ class RetrieveArticle:
             if title is not None and title.text == article_no:
                 caption = article.find('ArticleCaption')
                 if caption is not None:
-                    return caption.text 
+                    return caption.text
 
-
-
-    def exists_article_caption(self,article_caption):
-        """
-        条見出しが存在するかどうかを確認するメソッド
-        :param article_caption: 条見出しの文字列
-        :return: 存在する場合はTrue、存在しない場合はFalse
-        """
-        article_numbers = self.get_article_no(article_caption)
-        return len(article_numbers) > 0
     
-    def exists_article_no(self,article_no):
-        """
-        条文番号が存在するかどうかを確認するメソッド
-        :param article_no: 条文番号の文字列
-        :return: 存在する場合はTrue、存在しない場合はFalse
-        """
-        article_captions = self.get_article_caption(article_no)
-        return len(article_captions) > 0
 
 
 if __name__ == "__main__":
     # 使用例
-    law_num = "平成二十八年法律第百一号"
-    article_no = "第四十二条"
-    article_caption = "aaa"
+    law_num = "平成九年法律第百四号"
+    article_no = "第一条"
+    article_caption = "（預金保険法の適用）"
     
     retriever = RetrieveArticle(law_num)
     # print(retriever.data)  # 法令データの表示
     
-    # # 条見出しから条文番号を取得
-    # article_numbers = retriever.get_article_no(article_caption)
-    # print(f"条見出し '{article_caption}' に対応する条文番号: {article_numbers}")
+    # 条見出しから条文番号を取得
+    article_numbers = retriever.get_article_no(article_caption)
+    print(f"条見出し '{article_caption}' に対応する条文番号: {article_numbers}")
     
     # 条文番号から条見出しを取得
     article_captions = retriever.get_article_caption(article_no)
     print(f"条文番号{article_no}に対応する条見出し: {article_captions}")
     
-    # # 条見出しの存在確認
-    # exists_caption = retriever.exists_article_caption(article_caption)
-    # print(f"条見出し '{article_caption}' は存在するか: {exists_caption}")
-    
-    # # 条文番号の存在確認
-    # exists_no = retriever.exists_article_no("1")
-    # print(f"条文番号 '1' は存在するか: {exists_no}")
+    #retriever.dataをテキストファイルに出力
+    with open("law_data.txt", "w", encoding="utf-8") as f:
+        f.write(retriever.data)
     
 
 # #平成二十八年法律第百一号
