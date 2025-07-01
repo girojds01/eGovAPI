@@ -58,7 +58,7 @@ class RetrieveArticle:
 
 if __name__ == "__main__":
     # 使用例
-    law_num = "平成九年法律第百四号"
+    law_num = "昭和二十四年法律第二百五号"
     article_no = "第一条"
     article_caption = "（預金保険法の適用）"
     
