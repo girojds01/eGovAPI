@@ -53,7 +53,17 @@ class RetrieveArticle:
                 if caption is not None:
                     return caption.text
 
-    
+
+class RetrieveSupplyArticle(RetrieveArticle):
+    def amend_data(self):
+        """
+        法令データの中から、<SupplProvision Extract="true">で囲まれた部分を抽出して、self.dataに設定するメソッド
+        """
+        import re
+        pattern = r'<SupplProvision(?:\s[^>]*)>(.*?)</SupplProvision>'
+        matches = re.findall(pattern, self.data, re.DOTALL)
+        # 抽出された部分を結合して、self.dataに設定
+        self.data = '\n'.join(matches) if matches else ''       
 
 
 if __name__ == "__main__":
@@ -76,7 +86,12 @@ if __name__ == "__main__":
     #retriever.dataをテキストファイルに出力
     with open("law_data.txt", "w", encoding="utf-8") as f:
         f.write(retriever.data)
-    
+
+        
+        
+        
+        
+        
 
 # #平成二十八年法律第百一号
 
