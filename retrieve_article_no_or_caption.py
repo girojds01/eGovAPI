@@ -53,7 +53,6 @@ class RetrieveArticle:
                 if caption is not None:
                     return caption.text
 
-
 class RetrieveSupplyArticle(RetrieveArticle):
     def amend_data(self):
         """
@@ -65,14 +64,16 @@ class RetrieveSupplyArticle(RetrieveArticle):
         # 抽出された部分を結合して、self.dataに設定
         self.data = '\n'.join(matches) if matches else ''       
 
-
+#平成九年法律第百四号	True	第十一条	
 if __name__ == "__main__":
     # 使用例
-    law_num = "昭和二十四年法律第二百五号"
-    article_no = "第一条"
+    law_num = "平成九年法律第百四号"
+    article_no = "第十一条"
     article_caption = "（預金保険法の適用）"
     
-    retriever = RetrieveArticle(law_num)
+    retriever = RetrieveSupplyArticle(law_num)
+    retriever.amend_data()  # 法令データを附則に限定
+    print(retriever.data)  # 法令データの表示
     # print(retriever.data)  # 法令データの表示
     
     # 条見出しから条文番号を取得
