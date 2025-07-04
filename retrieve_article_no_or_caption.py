@@ -84,9 +84,7 @@ if __name__ == "__main__":
     article_captions = retriever.get_article_caption(article_no)
     print(f"条文番号{article_no}に対応する条見出し: {article_captions}")
     
-    #retriever.dataをテキストファイルに出力
-    with open("law_data.txt", "w", encoding="utf-8") as f:
-        f.write(retriever.data)
+
 
         
         
